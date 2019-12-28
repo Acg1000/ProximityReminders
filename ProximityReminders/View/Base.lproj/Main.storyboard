@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="r0v-Qh-ByB">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Proximity Reminders-->
+        <scene sceneID="Wux-vm-rnd">
+            <objects>
+                <tableViewController id="BgD-Vb-Miz" customClass="RemindersViewController" customModule="ProximityReminders" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="hpj-C0-o5J">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="Sw3-cl-rfc">
+                                <rect key="frame" x="0.0" y="28" width="414" height="79.5"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Sw3-cl-rfc" id="3pu-Uv-hYj">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="79.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f8Q-rc-jS8">
+                                            <rect key="frame" x="28" y="19" width="33.5" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zJu-2k-9gb">
+                                            <rect key="frame" x="28" y="44" width="69.5" height="16"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Location Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dLL-0i-xhb">
+                                            <rect key="frame" x="93.5" y="21.5" width="88.5" height="16"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                            <color key="textColor" systemColor="secondaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="f8Q-rc-jS8" firstAttribute="leading" secondItem="3pu-Uv-hYj" secondAttribute="leadingMargin" constant="8" id="AdJ-uo-CX5"/>
+                                        <constraint firstItem="zJu-2k-9gb" firstAttribute="leading" secondItem="f8Q-rc-jS8" secondAttribute="leading" id="JrQ-DC-RxG"/>
+                                        <constraint firstItem="dLL-0i-xhb" firstAttribute="leading" secondItem="f8Q-rc-jS8" secondAttribute="trailing" constant="32" id="YZu-jM-1IA"/>
+                                        <constraint firstItem="f8Q-rc-jS8" firstAttribute="top" secondItem="3pu-Uv-hYj" secondAttribute="topMargin" constant="8" id="dej-Rm-sxU"/>
+                                        <constraint firstItem="zJu-2k-9gb" firstAttribute="top" secondItem="f8Q-rc-jS8" secondAttribute="bottom" constant="4" id="iu4-4k-20T"/>
+                                        <constraint firstItem="dLL-0i-xhb" firstAttribute="centerY" secondItem="f8Q-rc-jS8" secondAttribute="centerY" id="ou9-qY-HfM"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="zJu-2k-9gb" secondAttribute="bottom" constant="8" id="pQM-T6-Tv3"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="BgD-Vb-Miz" id="C5z-it-oRL"/>
+                            <outlet property="delegate" destination="BgD-Vb-Miz" id="Tvy-zL-JN6"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Proximity Reminders" id="K82-5F-8Ft"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kYg-Ao-JEd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="647.82608695652175" y="37.5"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="LBJ-Bi-gl0">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="r0v-Qh-ByB" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0wM-yv-dec">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BgD-Vb-Miz" kind="relationship" relationship="rootViewController" id="mIh-bk-AMv"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Pv-S1-KOt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-262.31884057971018" y="37.5"/>
+        </scene>
+    </scenes>
+</document>
