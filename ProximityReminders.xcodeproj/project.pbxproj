@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB15FC1B23BA81C400F9E63A /* AddLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB15FC1A23BA81C400F9E63A /* AddLocationViewController.swift */; };
 		FBCCF73B23B7D7B9006AFF8A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF73A23B7D7B9006AFF8A /* AppDelegate.swift */; };
 		FBCCF73D23B7D7B9006AFF8A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF73C23B7D7B9006AFF8A /* SceneDelegate.swift */; };
 		FBCCF74223B7D7B9006AFF8A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBCCF74023B7D7B9006AFF8A /* Main.storyboard */; };
@@ -15,9 +16,16 @@
 		FBCCF74A23B7D7BA006AFF8A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBCCF74823B7D7BA006AFF8A /* LaunchScreen.storyboard */; };
 		FBCCF75523B7DEFB006AFF8A /* RemindersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75423B7DEFB006AFF8A /* RemindersViewController.swift */; };
 		FBCCF75723B7DF6B006AFF8A /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75623B7DF6B006AFF8A /* CoreDataStack.swift */; };
+		FBCCF75923B7ED50006AFF8A /* Create+EditReminderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75823B7ED50006AFF8A /* Create+EditReminderViewController.swift */; };
+		FBCCF75B23B7ED90006AFF8A /* ReminderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75A23B7ED90006AFF8A /* ReminderCell.swift */; };
+		FBCCF76023B7EEC6006AFF8A /* Location+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75C23B7EEC6006AFF8A /* Location+CoreDataClass.swift */; };
+		FBCCF76123B7EEC6006AFF8A /* Location+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75D23B7EEC6006AFF8A /* Location+CoreDataProperties.swift */; };
+		FBCCF76223B7EEC6006AFF8A /* Reminder+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75E23B7EEC6006AFF8A /* Reminder+CoreDataClass.swift */; };
+		FBCCF76323B7EEC6006AFF8A /* Reminder+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF75F23B7EEC6006AFF8A /* Reminder+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FB15FC1A23BA81C400F9E63A /* AddLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLocationViewController.swift; sourceTree = "<group>"; };
 		FBCCF73723B7D7B9006AFF8A /* ProximityReminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProximityReminders.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBCCF73A23B7D7B9006AFF8A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBCCF73C23B7D7B9006AFF8A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -28,6 +36,12 @@
 		FBCCF74B23B7D7BA006AFF8A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FBCCF75423B7DEFB006AFF8A /* RemindersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemindersViewController.swift; sourceTree = "<group>"; };
 		FBCCF75623B7DF6B006AFF8A /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
+		FBCCF75823B7ED50006AFF8A /* Create+EditReminderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Create+EditReminderViewController.swift"; sourceTree = "<group>"; };
+		FBCCF75A23B7ED90006AFF8A /* ReminderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderCell.swift; sourceTree = "<group>"; };
+		FBCCF75C23B7EEC6006AFF8A /* Location+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		FBCCF75D23B7EEC6006AFF8A /* Location+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
+		FBCCF75E23B7EEC6006AFF8A /* Reminder+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reminder+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		FBCCF75F23B7EEC6006AFF8A /* Reminder+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Reminder+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +89,10 @@
 		FBCCF75123B7D865006AFF8A /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				FBCCF75C23B7EEC6006AFF8A /* Location+CoreDataClass.swift */,
+				FBCCF75D23B7EEC6006AFF8A /* Location+CoreDataProperties.swift */,
+				FBCCF75E23B7EEC6006AFF8A /* Reminder+CoreDataClass.swift */,
+				FBCCF75F23B7EEC6006AFF8A /* Reminder+CoreDataProperties.swift */,
 				FBCCF74323B7D7B9006AFF8A /* ProximityReminders.xcdatamodeld */,
 				FBCCF75623B7DF6B006AFF8A /* CoreDataStack.swift */,
 			);
@@ -85,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				FBCCF74023B7D7B9006AFF8A /* Main.storyboard */,
+				FBCCF75A23B7ED90006AFF8A /* ReminderCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -93,6 +112,8 @@
 			isa = PBXGroup;
 			children = (
 				FBCCF75423B7DEFB006AFF8A /* RemindersViewController.swift */,
+				FBCCF75823B7ED50006AFF8A /* Create+EditReminderViewController.swift */,
+				FB15FC1A23BA81C400F9E63A /* AddLocationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -169,9 +190,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBCCF75723B7DF6B006AFF8A /* CoreDataStack.swift in Sources */,
+				FBCCF76223B7EEC6006AFF8A /* Reminder+CoreDataClass.swift in Sources */,
 				FBCCF75523B7DEFB006AFF8A /* RemindersViewController.swift in Sources */,
 				FBCCF74523B7D7B9006AFF8A /* ProximityReminders.xcdatamodeld in Sources */,
+				FBCCF75B23B7ED90006AFF8A /* ReminderCell.swift in Sources */,
+				FBCCF76023B7EEC6006AFF8A /* Location+CoreDataClass.swift in Sources */,
+				FBCCF76323B7EEC6006AFF8A /* Reminder+CoreDataProperties.swift in Sources */,
+				FB15FC1B23BA81C400F9E63A /* AddLocationViewController.swift in Sources */,
+				FBCCF76123B7EEC6006AFF8A /* Location+CoreDataProperties.swift in Sources */,
 				FBCCF73B23B7D7B9006AFF8A /* AppDelegate.swift in Sources */,
+				FBCCF75923B7ED50006AFF8A /* Create+EditReminderViewController.swift in Sources */,
 				FBCCF73D23B7D7B9006AFF8A /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
