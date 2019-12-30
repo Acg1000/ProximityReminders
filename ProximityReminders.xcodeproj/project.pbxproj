@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FB15FC1B23BA81C400F9E63A /* AddLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB15FC1A23BA81C400F9E63A /* AddLocationViewController.swift */; };
+		FB15FC1E23BA857400F9E63A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB15FC1D23BA857400F9E63A /* LocationManager.swift */; };
 		FBCCF73B23B7D7B9006AFF8A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF73A23B7D7B9006AFF8A /* AppDelegate.swift */; };
 		FBCCF73D23B7D7B9006AFF8A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBCCF73C23B7D7B9006AFF8A /* SceneDelegate.swift */; };
 		FBCCF74223B7D7B9006AFF8A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBCCF74023B7D7B9006AFF8A /* Main.storyboard */; };
@@ -25,7 +25,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FB15FC1A23BA81C400F9E63A /* AddLocationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddLocationViewController.swift; sourceTree = "<group>"; };
+		FB15FC1D23BA857400F9E63A /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		FBCCF73723B7D7B9006AFF8A /* ProximityReminders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ProximityReminders.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBCCF73A23B7D7B9006AFF8A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBCCF73C23B7D7B9006AFF8A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -55,6 +55,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FB15FC1C23BA855700F9E63A /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FB15FC1D23BA857400F9E63A /* LocationManager.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		FBCCF72E23B7D7B9006AFF8A = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +85,7 @@
 				FBCCF75123B7D865006AFF8A /* Model */,
 				FBCCF75223B7D86D006AFF8A /* View */,
 				FBCCF75323B7D877006AFF8A /* Controller */,
+				FB15FC1C23BA855700F9E63A /* Helpers */,
 				FBCCF73A23B7D7B9006AFF8A /* AppDelegate.swift */,
 				FBCCF73C23B7D7B9006AFF8A /* SceneDelegate.swift */,
 				FBCCF74623B7D7BA006AFF8A /* Assets.xcassets */,
@@ -113,7 +122,6 @@
 			children = (
 				FBCCF75423B7DEFB006AFF8A /* RemindersViewController.swift */,
 				FBCCF75823B7ED50006AFF8A /* Create+EditReminderViewController.swift */,
-				FB15FC1A23BA81C400F9E63A /* AddLocationViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -196,11 +204,11 @@
 				FBCCF75B23B7ED90006AFF8A /* ReminderCell.swift in Sources */,
 				FBCCF76023B7EEC6006AFF8A /* Location+CoreDataClass.swift in Sources */,
 				FBCCF76323B7EEC6006AFF8A /* Reminder+CoreDataProperties.swift in Sources */,
-				FB15FC1B23BA81C400F9E63A /* AddLocationViewController.swift in Sources */,
 				FBCCF76123B7EEC6006AFF8A /* Location+CoreDataProperties.swift in Sources */,
 				FBCCF73B23B7D7B9006AFF8A /* AppDelegate.swift in Sources */,
 				FBCCF75923B7ED50006AFF8A /* Create+EditReminderViewController.swift in Sources */,
 				FBCCF73D23B7D7B9006AFF8A /* SceneDelegate.swift in Sources */,
+				FB15FC1E23BA857400F9E63A /* LocationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
