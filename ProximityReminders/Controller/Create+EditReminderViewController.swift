@@ -18,6 +18,7 @@ class Create_EditReminderViewController: UIViewController {
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var getCurrentLocationButton: UIButton!
+    @IBOutlet weak var deleteIcon: UIBarButtonItem!
     
     // MARK: Helper Classes
     lazy var locationManager: LocationManager = {
@@ -71,15 +72,17 @@ class Create_EditReminderViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         // Map longpress setup
-        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(mapLongPressed))
-        mapView.addGestureRecognizer(longPressGestureRecognizer)
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(mapPressed))
+        mapView.addGestureRecognizer(tapGestureRecognizer)
         getCurrentLocationButton.tintColor = .gray
         
         if isEditingReminder {
-            titleLabel.title = "Create Reminder"
+            titleLabel.title = "Edit Reminder"
             
             if let reminder = editingReminder {
                 titleField.text = reminder.name
+                deleteIcon.isEnabled = true
+
                 clLocation = CLLocation(latitude: reminder.location.latitude, longitude: reminder.location.longitude)
                 
                 // Getting the address
@@ -125,7 +128,8 @@ class Create_EditReminderViewController: UIViewController {
             }
 
         } else {
-            titleLabel.title = "Edit Reminder"
+            titleLabel.title = "Create Reminder"
+            deleteIcon.isEnabled = false
 
         }
     }
@@ -224,7 +228,7 @@ class Create_EditReminderViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @objc func mapLongPressed(gestureRecogniser: UIGestureRecognizer) {
+    @objc func mapPressed(gestureRecogniser: UIGestureRecognizer) {
         
         // Remove the annotations that exist
         mapView.removeAnnotations(mapView.annotations)
@@ -277,6 +281,18 @@ class Create_EditReminderViewController: UIViewController {
         case 1: isRecurring = true; print("repeat")
         default:
             alertOnArrival = true
+        }
+    }
+    
+    @IBAction func deletePressed(_ sender: Any) {
+        if let reminder = editingReminder {
+            context.delete(reminder)
+            context.saveChanges()
+            dismiss(animated: true, completion: nil)
+            wasDismissedDelegate?.wasDismissed()
+            
+        } else {
+            print("Not Deleted")
         }
     }
 }

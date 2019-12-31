@@ -151,11 +151,18 @@
                                                 <action selector="cancelPressed:" destination="XuJ-Dh-Efm" id="V5h-8s-fV3"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" style="plain" systemItem="save" id="LbW-X9-4SQ">
-                                            <connections>
-                                                <action selector="savePressed:" destination="XuJ-Dh-Efm" id="LEJ-Ex-cF4"/>
-                                            </connections>
-                                        </barButtonItem>
+                                        <rightBarButtonItems>
+                                            <barButtonItem style="plain" systemItem="save" id="LbW-X9-4SQ">
+                                                <connections>
+                                                    <action selector="savePressed:" destination="XuJ-Dh-Efm" id="LEJ-Ex-cF4"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem systemItem="trash" id="7fm-Da-OP9">
+                                                <connections>
+                                                    <action selector="deletePressed:" destination="XuJ-Dh-Efm" id="22D-13-Q0I"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </rightBarButtonItems>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -273,6 +280,7 @@
                     <navigationItem key="navigationItem" id="5ak-2g-ZXO"/>
                     <connections>
                         <outlet property="approachingSwitcher" destination="lo2-2h-mEi" id="20M-qg-EtV"/>
+                        <outlet property="deleteIcon" destination="7fm-Da-OP9" id="Hof-K4-Xqy"/>
                         <outlet property="getCurrentLocationButton" destination="rcb-fB-e2S" id="mLb-y8-qUS"/>
                         <outlet property="locationTextField" destination="LpS-fA-n9X" id="OHL-dB-Kr2"/>
                         <outlet property="mapView" destination="Ghh-DP-neF" id="3ZO-6Y-Ukg"/>
