@@ -29,15 +29,33 @@ class RemindersViewController: UITableViewController {
         
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        dataSource.refreshData()
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "createReminder" {
+            let createReminderController = segue.destination as? Create_EditReminderViewController
+            createReminderController?.wasDismissedDelegate = self
+            
+        }
     }
-
-    
-    
     
     // MARK: Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        let selectedReminder = dataSource.reminders[indexPath.row]
+        let editReminderController = storyboard?.instantiateViewController(withIdentifier: "CreateReminderController") as! Create_EditReminderViewController
+        editReminderController.setupView(withReminder: selectedReminder)
+        
+        self.present(editReminderController, animated: true, completion: nil)
+        
+    }
+}
+
+// MARK: Extensions
+
+extension RemindersViewController: WasDismissedDelegate {
+    func wasDismissed() {
+        
+        dataSource.refreshData()
+        tableView.reloadData()
     }
 }

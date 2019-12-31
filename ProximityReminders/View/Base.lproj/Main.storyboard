@@ -121,7 +121,7 @@
                     <navigationItem key="navigationItem" title="Proximity Reminders" id="K82-5F-8Ft">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Oie-dX-3lR">
                             <connections>
-                                <segue destination="XuJ-Dh-Efm" kind="presentation" id="6PB-J9-Qxg"/>
+                                <segue destination="XuJ-Dh-Efm" kind="presentation" identifier="createReminder" id="6PB-J9-Qxg"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -133,7 +133,7 @@
         <!--Create Edit Reminder View Controller-->
         <scene sceneID="ot5-Lx-Yac">
             <objects>
-                <viewController id="XuJ-Dh-Efm" customClass="Create_EditReminderViewController" customModule="ProximityReminders" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CreateReminderController" id="XuJ-Dh-Efm" customClass="Create_EditReminderViewController" customModule="ProximityReminders" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dLy-p4-9mz">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -164,6 +164,7 @@
                                 <subviews>
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Ghh-DP-neF">
                                         <rect key="frame" x="0.0" y="0.0" width="414" height="506"/>
+                                        <gestureRecognizers/>
                                     </mapView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Mv-79-y8q">
                                         <rect key="frame" x="0.0" y="506" width="414" height="246"/>
@@ -272,6 +273,7 @@
                     <navigationItem key="navigationItem" id="5ak-2g-ZXO"/>
                     <connections>
                         <outlet property="approachingSwitcher" destination="lo2-2h-mEi" id="20M-qg-EtV"/>
+                        <outlet property="getCurrentLocationButton" destination="rcb-fB-e2S" id="mLb-y8-qUS"/>
                         <outlet property="locationTextField" destination="LpS-fA-n9X" id="OHL-dB-Kr2"/>
                         <outlet property="mapView" destination="Ghh-DP-neF" id="3ZO-6Y-Ukg"/>
                         <outlet property="singleUseSwitcher" destination="Z7X-ug-gLm" id="DvL-oC-3MX"/>

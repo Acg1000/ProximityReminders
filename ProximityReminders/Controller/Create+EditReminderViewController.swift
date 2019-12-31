@@ -17,12 +17,14 @@ class Create_EditReminderViewController: UIViewController {
     @IBOutlet weak var singleUseSwitcher: UISegmentedControl!
     @IBOutlet weak var locationTextField: UITextField!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var getCurrentLocationButton: UIButton!
     
     // MARK: Helper Classes
     lazy var locationManager: LocationManager = {
         return LocationManager(locationDelegate: self, permissionsDelegate: nil)
     }()
     let context = CoreDataStack.shared.managedObjectContext
+    var wasDismissedDelegate: WasDismissedDelegate?
     
     
     // MARK: Creation Variables
@@ -35,7 +37,6 @@ class Create_EditReminderViewController: UIViewController {
             }
         }
     }
-    
     var placemark: CLPlacemark? = nil {
         didSet {
             if let placemark = placemark {
@@ -52,17 +53,57 @@ class Create_EditReminderViewController: UIViewController {
     // MARK: Other variables
     var date: Date = Date()
     
+    // MARK: Editing Variable
+    var editingReminder: Reminder?
     
+    
+    // MARK: View did load
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Setup
         setupMap()
         titleField.delegate = self
+        locationTextField.isEnabled = false
         
         // Keyboard notification manager
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
+        // Map longpress setup
+        let longPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(mapLongPressed))
+        mapView.addGestureRecognizer(longPressGestureRecognizer)
+        getCurrentLocationButton.tintColor = .gray
+        
+        if isEditingReminder {
+            titleLabel.title = "Create Reminder"
+            
+            if let reminder = editingReminder {
+                titleField.text = reminder.name
+                clLocation = CLLocation(latitude: reminder.location.latitude, longitude: reminder.location.longitude)
+                
+                // Getting the address
+                if let address = reminder.location.address, let city = reminder.location.city {
+                    locationTextField.text = "\(address), \(city)"
+                }
+                
+                if reminder.alertOnArrival {
+                    approachingSwitcher.selectedSegmentIndex = 0
+                } else {
+                    approachingSwitcher.selectedSegmentIndex = 1
+                }
+                
+                if reminder.isRecurring {
+                    singleUseSwitcher.selectedSegmentIndex = 1
+                } else {
+                    singleUseSwitcher.selectedSegmentIndex = 0
+                }
+            }
+
+        } else {
+            titleLabel.title = "Edit Reminder"
+
+        }
     }
     
     // MARK: Helper functions
@@ -72,30 +113,35 @@ class Create_EditReminderViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
-    func setupMap() {
-        mapView.showsUserLocation = true
-    }
-        
     @objc func keyboardWillShow(notification: NSNotification) {
-           if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-               if self.view.frame.origin.y == 0 {
-                   self.view.frame.origin.y -= keyboardSize.height
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardSize.height
             }
         }
     }
 
-       @objc func keyboardWillHide(notification: NSNotification) {
-           if self.view.frame.origin.y != 0 {
-               self.view.frame.origin.y = 0
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
         }
     }
-    
-    
     
     func goToLocation(_ location: CLLocation) {
         let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         mapView.setRegion(region, animated: true)
+    }
+    
+    
+    // MARK: Preperation
+    func setupView(withReminder reminder: Reminder) {
+        isEditingReminder = true
+        editingReminder = reminder
+    }
+    
+    func setupMap() {
+        mapView.showsUserLocation = true
     }
     
     func populateViewWithPlacemark(_ placemark: CLPlacemark) {
@@ -107,13 +153,30 @@ class Create_EditReminderViewController: UIViewController {
         
     // MARK: Button Functions
     @IBAction func savePressed(_ sender: Any) {
-        guard let name = titleField.text else { createAlert(withTitle: "Title needed", andDescription: "Please enter a title to save"); return }
+        guard let name = titleField.text, !name.isEmpty else { createAlert(withTitle: "Title needed", andDescription: "Please enter a title to save"); return }
         guard let location = clLocation else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
         guard let placemark = placemark else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
 
         
         if isEditingReminder {
-            // needs implementation
+            if let reminder = editingReminder {
+                // TITLE
+                if let name = titleField.text {
+                    reminder.setValue(name, forKey: "name")
+                }
+                
+                // LOCATION
+                reminder.setValue(Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: placemark.name, city: placemark.locality, inContext: context), forKey: "location")
+                
+                // Recurring AND Alert
+                reminder.setValue(isRecurring, forKey: "isRecurring")
+                reminder.setValue(alertOnArrival, forKey: "alertOnArrival")
+                
+                // Saving the changes
+                context.saveChanges()
+                dismiss(animated: true, completion: nil)
+                wasDismissedDelegate?.wasDismissed()
+            }
             
         } else {
             
@@ -123,6 +186,8 @@ class Create_EditReminderViewController: UIViewController {
             
             context.saveChanges()
             dismiss(animated: true, completion: nil)
+            wasDismissedDelegate?.wasDismissed()
+
         }
     }
     
@@ -130,9 +195,42 @@ class Create_EditReminderViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    @objc func mapLongPressed(gestureRecogniser: UIGestureRecognizer) {
+        
+        // Remove the annotations that exist
+        mapView.removeAnnotations(mapView.annotations)
+        
+        // get the point where the user touched and turn it into a set of coordinates
+        let touchPoint = gestureRecogniser.location(in: self.mapView)
+        let touchMapCoordinate = mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
+        let point = MKPointAnnotation()
+        point.coordinate = touchMapCoordinate
+        
+        // Set the location for the class
+        clLocation = CLLocation(latitude: touchMapCoordinate.latitude, longitude: touchMapCoordinate.longitude)
+        
+        locationManager.getPlacemark(from: CLLocation(latitude: touchMapCoordinate.latitude, longitude: touchMapCoordinate.longitude)) { placemark in
+            
+            // Set the pin details
+            point.title = placemark?.name
+            point.subtitle = placemark?.locality
+            
+            // Set the placemark
+            self.placemark = placemark
+            
+        }
+        
+        // Add the annotation
+        mapView.addAnnotation(point)
+        getCurrentLocationButton.tintColor = .gray
+
+    }
+    
     @IBAction func getCurrentLocation(_ sender: Any) {
         print("Get current location")
         locationManager.requestLocation()
+        getCurrentLocationButton.tintColor = .systemBlue
+        
     }
    
     @IBAction func approachingSwitched(_ sender: Any) {
@@ -188,4 +286,11 @@ extension Create_EditReminderViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
+}
+
+
+// MARK: Protocols
+
+protocol WasDismissedDelegate {
+    func wasDismissed()
 }
