@@ -5,7 +5,6 @@
         <attribute name="city" optional="YES" attributeType="String"/>
         <attribute name="latitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="reminder" maxCount="1" deletionRule="Cascade" destinationEntity="Reminder" inverseName="location" inverseEntity="Reminder"/>
     </entity>
     <entity name="Reminder" representedClassName="Reminder" syncable="YES">
         <attribute name="alertOnArrival" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -13,11 +12,10 @@
         <attribute name="detail" optional="YES" attributeType="String"/>
         <attribute name="isRecurring" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
-        <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
-        <relationship name="location" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="reminder" inverseEntity="Location"/>
+        <relationship name="location" maxCount="1" deletionRule="Cascade" destinationEntity="Location"/>
     </entity>
     <elements>
-        <element name="Location" positionX="-63" positionY="-18" width="128" height="28"/>
-        <element name="Reminder" positionX="-54" positionY="-9" width="128" height="28"/>
+        <element name="Location" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="Reminder" positionX="-54" positionY="-9" width="128" height="133"/>
     </elements>
 </model>

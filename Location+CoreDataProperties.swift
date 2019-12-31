@@ -21,6 +21,20 @@ extension Location {
     @NSManaged public var latitude: Double
     @NSManaged public var address: String?
     @NSManaged public var city: String?
-    @NSManaged public var reminder: Reminder?
 
+}
+
+extension Location {
+    
+    @nonobjc class func with(longitude: Double, latitude: Double, address: String?, city: String?, inContext context: NSManagedObjectContext) -> Location {
+        
+        let location = Location(context: context)
+        
+        location.longitude = longitude
+        location.latitude = latitude
+        location.address = address
+        location.city = city
+        
+        return location
+    }
 }

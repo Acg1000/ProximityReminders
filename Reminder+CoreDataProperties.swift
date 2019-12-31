@@ -14,16 +14,19 @@ import CoreData
 extension Reminder {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Reminder> {
-        return NSFetchRequest<Reminder>(entityName: "Reminder")
+        let sortDescriptor = NSSortDescriptor(key: "creationDate", ascending: false)
+        let request = NSFetchRequest<Reminder>(entityName: "Reminder")
+        
+        request.sortDescriptors = [sortDescriptor]
+        return request
     }
 
     @NSManaged public var name: String
     @NSManaged public var detail: String?
     @NSManaged public var alertOnArrival: Bool
     @NSManaged public var isRecurring: Bool
-    @NSManaged public var creationDate: Date?
-    @NSManaged public var uuid: UUID?
-    @NSManaged public var location: Location?
+    @NSManaged public var creationDate: Date
+    @NSManaged public var location: Location
 
 }
 
@@ -42,6 +45,7 @@ extension Reminder {
         reminder.alertOnArrival = alertOnArrival
         reminder.isRecurring = isRecurring
         reminder.location = location
+        reminder.creationDate = Date()
         
         return reminder
     }

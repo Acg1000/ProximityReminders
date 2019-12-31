@@ -12,8 +12,9 @@ class ReminderCell: UITableViewCell {
     
     // Outlets
     @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var detailLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
+    @IBOutlet weak var triggerLabel: UILabel!
+    @IBOutlet weak var repeatsLabel: UILabel!
     
     static let reuseIdentifier = "reminderCell"
 
@@ -28,13 +29,21 @@ class ReminderCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func configure(title: String, description: String?, location: Location) {
+    func configure(title: String, location: Location, alertOnArrival: Bool, repeats: Bool) {
         
         titleLabel.text = title
         locationLabel.text = location.address
-     
-        if let description = description {
-            detailLabel.text = description
+        
+        if alertOnArrival {
+            triggerLabel.text = "On Arrival"
+        } else {
+            triggerLabel.text = "On Departure"
+        }
+        
+        if repeats {
+            repeatsLabel.text = "true"
+        } else {
+            repeatsLabel.text = "false"
         }
     }
 }

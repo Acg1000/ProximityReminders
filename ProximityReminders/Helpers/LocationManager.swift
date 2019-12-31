@@ -120,14 +120,17 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             locationDelegate?.failedWithError(.unableToFindLocation)
             return
         }
-        
-        locationDelegate?.obtainedLocation(location)
-        
+                
         getPlacemark(from: location) { placemark in
             guard let placemark = placemark else { return }
             
-            self.locationDelegate?.obtainedPlacemark(placemark)
+            if let location = placemark.location {
+                self.locationDelegate?.obtainedPlacemark(placemark, location: location)
 
+            } else {
+                self.locationDelegate?.failedWithError(.unableToFindLocation)
+                
+            }
         }
     }
 }
@@ -145,7 +148,6 @@ protocol LocationPermissionsDelegate: class {
 }
 
 protocol LocationManagerDelegate: class {
-    func obtainedLocation(_ location: CLLocation)
-    func obtainedPlacemark(_ placemark: CLPlacemark)
+    func obtainedPlacemark(_ placemark: CLPlacemark, location: CLLocation)
     func failedWithError(_ error: LocationError)
 }

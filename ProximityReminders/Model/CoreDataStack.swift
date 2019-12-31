@@ -10,6 +10,8 @@ import Foundation
 import CoreData
 
 class CoreDataStack {
+    static let shared = CoreDataStack()
+    
     lazy var managedObjectContext: NSManagedObjectContext = {
         let container = self.persistentContainer
         return container.viewContext
@@ -35,9 +37,10 @@ extension NSManagedObjectContext {
     func saveChanges() {
         if self.hasChanges {
             do {
+                print("Saving changes")
                 try save()
             } catch {
-                fatalError("Error: \(error.localizedDescription)")
+                fatalError("Error: \(error.localizedDescription): \(userInfo)")
             }
         }
     }

@@ -8,10 +8,11 @@
 
 import UIKit
 import MapKit
+import MobileCoreServices
 
 class Create_EditReminderViewController: UIViewController {
     @IBOutlet weak var titleLabel: UINavigationItem!
-    @IBOutlet weak var textField: UITextField!
+    @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var approachingSwitcher: UISegmentedControl!
     @IBOutlet weak var singleUseSwitcher: UISegmentedControl!
     @IBOutlet weak var locationTextField: UITextField!
@@ -21,11 +22,29 @@ class Create_EditReminderViewController: UIViewController {
     lazy var locationManager: LocationManager = {
         return LocationManager(locationDelegate: self, permissionsDelegate: nil)
     }()
+    let context = CoreDataStack.shared.managedObjectContext
     
     
     // MARK: Creation Variables
     var isEditingReminder = false
-    var location: Location? = nil
+    var clLocation: CLLocation? = nil {
+        didSet {
+            if let clLocation = clLocation {
+                print("Location was set")
+                goToLocation(clLocation)
+            }
+        }
+    }
+    
+    var placemark: CLPlacemark? = nil {
+        didSet {
+            if let placemark = placemark {
+                print("placemark was set")
+                populateViewWithPlacemark(placemark)
+
+            }
+        }
+    }
     var alertOnArrival: Bool = true
     var isRecurring: Bool = true
     
@@ -38,6 +57,12 @@ class Create_EditReminderViewController: UIViewController {
         super.viewDidLoad()
 
         setupMap()
+        titleField.delegate = self
+        
+        // Keyboard notification manager
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
     }
     
     // MARK: Helper functions
@@ -50,6 +75,22 @@ class Create_EditReminderViewController: UIViewController {
     func setupMap() {
         mapView.showsUserLocation = true
     }
+        
+    @objc func keyboardWillShow(notification: NSNotification) {
+           if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+               if self.view.frame.origin.y == 0 {
+                   self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+
+       @objc func keyboardWillHide(notification: NSNotification) {
+           if self.view.frame.origin.y != 0 {
+               self.view.frame.origin.y = 0
+        }
+    }
+    
+    
     
     func goToLocation(_ location: CLLocation) {
         let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
@@ -66,18 +107,22 @@ class Create_EditReminderViewController: UIViewController {
         
     // MARK: Button Functions
     @IBAction func savePressed(_ sender: Any) {
-        if let name = textField.text, let location = location { 
-            
-            if isEditingReminder {
-                // needs implementation
-                
-            } else {
-                let _ = Reminder.with(name, description: nil, alertOnArrival: alertOnArrival, isRecurring: isRecurring, creationDate: date, location: location, inContext: AppDelegate.sharedManagedObjectContext)
-            }
+        guard let name = titleField.text else { createAlert(withTitle: "Title needed", andDescription: "Please enter a title to save"); return }
+        guard let location = clLocation else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
+        guard let placemark = placemark else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
+
+        
+        if isEditingReminder {
+            // needs implementation
             
         } else {
             
-            // Create an alert and ask for more input
+            let location = Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: placemark.name, city: placemark.locality, inContext: context)
+            
+            let _ = Reminder.with(name, description: nil, alertOnArrival: alertOnArrival, isRecurring: isRecurring, creationDate: date, location: location, inContext: context)
+            
+            context.saveChanges()
+            dismiss(animated: true, completion: nil)
         }
     }
     
@@ -109,15 +154,16 @@ class Create_EditReminderViewController: UIViewController {
     }
 }
 
+
+// MARK: Extensions
+
 extension Create_EditReminderViewController: LocationManagerDelegate {
-    func obtainedLocation(_ location: CLLocation) {
-        print("obtained location!")
-        goToLocation(location)
-    }
     
-    func obtainedPlacemark(_ placemark: CLPlacemark) {
+    func obtainedPlacemark(_ placemark: CLPlacemark, location: CLLocation) {
         print("obtained placemark")
-        populateViewWithPlacemark(placemark)
+        
+        clLocation = location
+        self.placemark = placemark
     }
     
     func failedWithError(_ error: LocationError) {
@@ -131,5 +177,15 @@ extension Create_EditReminderViewController: LocationManagerDelegate {
         case .unknownError:
             createAlert(withTitle: "Unknown Error", andDescription: "There was an unknown error...")
         }
+    }
+}
+
+// Make keyboard dismiss when done is pressed on the keyboard
+extension Create_EditReminderViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool
+    {
+
+        textField.resignFirstResponder()
+        return true
     }
 }
