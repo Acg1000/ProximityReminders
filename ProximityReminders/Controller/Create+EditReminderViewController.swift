@@ -98,6 +98,30 @@ class Create_EditReminderViewController: UIViewController {
                 } else {
                     singleUseSwitcher.selectedSegmentIndex = 0
                 }
+                
+                
+                // TODO: REMOVE THIS AND CREATE A CLASS FOR IT
+                
+                // Remove the annotations that exist
+                mapView.removeAnnotations(mapView.annotations)
+                
+                let point = MKPointAnnotation()
+                point.coordinate = CLLocationCoordinate2D(latitude: reminder.location.latitude, longitude: reminder.location.longitude)
+                
+                locationManager.getPlacemark(from: CLLocation(latitude: reminder.location.latitude, longitude: reminder.location.longitude)) { placemark in
+                    
+                    // Set the pin details
+                    point.title = placemark?.name
+                    point.subtitle = placemark?.locality
+                    
+                    // Set the placemark
+                    self.placemark = placemark
+                    
+                }
+                
+                // Add the annotation
+                mapView.addAnnotation(point)
+                getCurrentLocationButton.tintColor = .gray
             }
 
         } else {
@@ -155,8 +179,6 @@ class Create_EditReminderViewController: UIViewController {
     @IBAction func savePressed(_ sender: Any) {
         guard let name = titleField.text, !name.isEmpty else { createAlert(withTitle: "Title needed", andDescription: "Please enter a title to save"); return }
         guard let location = clLocation else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
-        guard let placemark = placemark else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
-
         
         if isEditingReminder {
             if let reminder = editingReminder {
@@ -166,7 +188,12 @@ class Create_EditReminderViewController: UIViewController {
                 }
                 
                 // LOCATION
-                reminder.setValue(Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: placemark.name, city: placemark.locality, inContext: context), forKey: "location")
+                if let address = reminder.location.address, let city = reminder.location.city {
+                    reminder.setValue(Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: address, city: city, inContext: context), forKey: "location")
+                } else {
+                    reminder.setValue(Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: nil, city: nil, inContext: context), forKey: "location")
+                }
+                
                 
                 // Recurring AND Alert
                 reminder.setValue(isRecurring, forKey: "isRecurring")
@@ -179,6 +206,8 @@ class Create_EditReminderViewController: UIViewController {
             }
             
         } else {
+            guard let placemark = placemark else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
+
             
             let location = Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: placemark.name, city: placemark.locality, inContext: context)
             
@@ -244,8 +273,8 @@ class Create_EditReminderViewController: UIViewController {
     
     @IBAction func singleUseSwitched(_ sender: Any) {
         switch singleUseSwitcher.selectedSegmentIndex {
-        case 0: isRecurring = true; print("single use")
-        case 1: isRecurring = false; print("repeat")
+        case 0: isRecurring = false; print("single use")
+        case 1: isRecurring = true; print("repeat")
         default:
             alertOnArrival = true
         }

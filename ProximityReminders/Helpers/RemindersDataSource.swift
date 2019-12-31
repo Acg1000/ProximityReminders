@@ -23,6 +23,9 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
         } catch {
             fatalError("Fetch request or context was invalid")
         }
+        
+        super.init()
+        self.fetchedResultsController.delegate = self
     }
     
     func refreshData() {
