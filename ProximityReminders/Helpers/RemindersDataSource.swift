@@ -5,6 +5,7 @@
 //  Created by Andrew Graves on 12/30/19.
 //  Copyright © 2019 Andrew Graves. All rights reserved.
 //
+//  PURPOSE: Serves as the datasource for the Reminders Table View
 
 import CoreData
 import UIKit
@@ -28,6 +29,7 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
         self.fetchedResultsController.delegate = self
     }
     
+    // Refreshes the data by fetching a new batch of reminders from Core Data
     func refreshData() {
         do {
             try fetchedResultsController.performFetch()

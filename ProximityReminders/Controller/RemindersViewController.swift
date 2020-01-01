@@ -57,5 +57,6 @@ extension RemindersViewController: WasDismissedDelegate {
         
         dataSource.refreshData()
         tableView.reloadData()
+        
     }
 }

@@ -27,6 +27,7 @@ extension Reminder {
     @NSManaged public var isRecurring: Bool
     @NSManaged public var creationDate: Date
     @NSManaged public var location: Location
+    @NSManaged public var uuid: UUID
 
 }
 
@@ -46,6 +47,7 @@ extension Reminder {
         reminder.isRecurring = isRecurring
         reminder.location = location
         reminder.creationDate = Date()
+        reminder.uuid = UUID()
         
         return reminder
     }

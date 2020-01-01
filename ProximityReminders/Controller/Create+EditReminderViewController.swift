@@ -26,6 +26,7 @@ class Create_EditReminderViewController: UIViewController {
     }()
     let context = CoreDataStack.shared.managedObjectContext
     var wasDismissedDelegate: WasDismissedDelegate?
+    var notificationManager = NotificationManager.shared
     
     
     // MARK: Creation Variables
@@ -66,6 +67,8 @@ class Create_EditReminderViewController: UIViewController {
         setupMap()
         titleField.delegate = self
         locationTextField.isEnabled = false
+        mapView.delegate = self
+        notificationManager.center.delegate = self
         
         // Keyboard notification manager
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -159,6 +162,11 @@ class Create_EditReminderViewController: UIViewController {
         let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
         mapView.setRegion(region, animated: true)
+        
+        mapView.removeOverlays(mapView.overlays)
+        let mkCircle = MKCircle(center: center, radius: 50)
+        mapView.addOverlay(mkCircle)
+        
     }
     
     
@@ -203,6 +211,11 @@ class Create_EditReminderViewController: UIViewController {
                 reminder.setValue(isRecurring, forKey: "isRecurring")
                 reminder.setValue(alertOnArrival, forKey: "alertOnArrival")
                 
+                // Delete and re-add notifications
+                notificationManager.removeNotification(withIdentifier: reminder.uuid)
+                notificationManager.createNotification(with: reminder)
+                notificationManager.getAllNotifications()
+                
                 // Saving the changes
                 context.saveChanges()
                 dismiss(animated: true, completion: nil)
@@ -215,7 +228,11 @@ class Create_EditReminderViewController: UIViewController {
             
             let location = Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: placemark.name, city: placemark.locality, inContext: context)
             
-            let _ = Reminder.with(name, description: nil, alertOnArrival: alertOnArrival, isRecurring: isRecurring, creationDate: date, location: location, inContext: context)
+            let reminder = Reminder.with(name, description: nil, alertOnArrival: alertOnArrival, isRecurring: isRecurring, creationDate: date, location: location, inContext: context)
+            
+            // Create notification
+            notificationManager.createNotification(with: reminder)
+            notificationManager.getAllNotifications()
             
             context.saveChanges()
             dismiss(animated: true, completion: nil)
@@ -260,7 +277,6 @@ class Create_EditReminderViewController: UIViewController {
     }
     
     @IBAction func getCurrentLocation(_ sender: Any) {
-        print("Get current location")
         locationManager.requestLocation()
         getCurrentLocationButton.tintColor = .systemBlue
         
@@ -286,11 +302,13 @@ class Create_EditReminderViewController: UIViewController {
     
     @IBAction func deletePressed(_ sender: Any) {
         if let reminder = editingReminder {
+            notificationManager.removeNotification(withIdentifier: reminder.uuid)
+
             context.delete(reminder)
             context.saveChanges()
             dismiss(animated: true, completion: nil)
             wasDismissedDelegate?.wasDismissed()
-            
+                        
         } else {
             print("Not Deleted")
         }
@@ -303,7 +321,6 @@ class Create_EditReminderViewController: UIViewController {
 extension Create_EditReminderViewController: LocationManagerDelegate {
     
     func obtainedPlacemark(_ placemark: CLPlacemark, location: CLLocation) {
-        print("obtained placemark")
         
         clLocation = location
         self.placemark = placemark
@@ -323,10 +340,32 @@ extension Create_EditReminderViewController: LocationManagerDelegate {
     }
 }
 
+
+extension Create_EditReminderViewController: MKMapViewDelegate {
+    func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+        if overlay.isKind(of: MKCircle.self) {
+            let circleRenderer = MKCircleRenderer(overlay: overlay)
+            circleRenderer.fillColor = UIColor.systemBlue.withAlphaComponent(0.1)
+            circleRenderer.strokeColor = UIColor.systemBlue
+            circleRenderer.lineWidth = 2
+            return circleRenderer
+
+        }
+        return MKOverlayRenderer(overlay: overlay)
+    }
+}
+
+extension Create_EditReminderViewController: UNUserNotificationCenterDelegate {
+    // This method will be called when app received push notifications in foreground
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("Notification happened")
+        completionHandler([.alert, .badge, .sound])
+    }
+}
+
 // Make keyboard dismiss when done is pressed on the keyboard
 extension Create_EditReminderViewController: UITextFieldDelegate {
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool
-    {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 
         textField.resignFirstResponder()
         return true

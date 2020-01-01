@@ -12,10 +12,11 @@
         <attribute name="detail" optional="YES" attributeType="String"/>
         <attribute name="isRecurring" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
+        <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="location" maxCount="1" deletionRule="Cascade" destinationEntity="Location"/>
     </entity>
     <elements>
         <element name="Location" positionX="-63" positionY="-18" width="128" height="103"/>
-        <element name="Reminder" positionX="-54" positionY="-9" width="128" height="133"/>
+        <element name="Reminder" positionX="-54" positionY="-9" width="128" height="148"/>
     </elements>
 </model>
