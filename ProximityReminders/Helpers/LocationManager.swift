@@ -5,6 +5,7 @@
 //  Created by Andrew Graves on 12/30/19.
 //  Copyright © 2019 Andrew Graves. All rights reserved.
 //
+//  PURPOSE: Manages all the location based information
 
 import CoreLocation
 import Network
@@ -36,6 +37,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     
     // MARK: Authorization Functions
+    // Displays true or false depending on if the app is authorised to track location
     static var isAuthorized: Bool {
         switch CLLocationManager.authorizationStatus() {
         case .authorizedAlways, .authorizedWhenInUse: return true
@@ -43,6 +45,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    // If the authorization is changed, tell the delegate
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .authorizedWhenInUse {
             permissionsDelegate?.authorizationSucceeded()
@@ -51,6 +54,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    // Asks the user to allow location data to be given to the app
     func requestLocationAuthorization() throws {
         let authorizationStatus = CLLocationManager.authorizationStatus()
         
@@ -64,6 +68,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: Location
+    // Gets the location
     func requestLocation() {
         
         // This checks to see if there is an active network connection
@@ -86,6 +91,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.requestLocation()
     }
     
+    // Gets a placemark from a fetched location
     func getPlacemark(from location: CLLocation, completionHandler: @escaping (CLPlacemark?) -> Void) {
         let geocoder = CLGeocoder()
 
@@ -101,6 +107,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     
+    // If it fails then...
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         guard let error = error as? CLError else {
             locationDelegate?.failedWithError(.unknownError)
@@ -115,12 +122,14 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    // If the location is updated...
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else {
             locationDelegate?.failedWithError(.unableToFindLocation)
             return
         }
                 
+        // Get a placemark from the updated location
         getPlacemark(from: location) { placemark in
             guard let placemark = placemark else { return }
             

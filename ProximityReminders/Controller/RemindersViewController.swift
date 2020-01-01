@@ -5,6 +5,7 @@
 //  Created by Andrew Graves on 12/28/19.
 //  Copyright © 2019 Andrew Graves. All rights reserved.
 //
+//  FUNCTION: Serves as the view controller for the reminder tableview
 
 import CoreData
 import UIKit
@@ -30,7 +31,6 @@ class RemindersViewController: UITableViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         if segue.identifier == "createReminder" {
             let createReminderController = segue.destination as? Create_EditReminderViewController
             createReminderController?.wasDismissedDelegate = self

@@ -5,6 +5,7 @@
 //  Created by Andrew Graves on 12/28/19.
 //  Copyright © 2019 Andrew Graves. All rights reserved.
 //
+//  PURPOSE: Acts as the backing class for the cell in the ReminderView
 
 import UIKit
 
@@ -20,15 +21,14 @@ class ReminderCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
-        // Configure the view for the selected state
     }
     
+    // A method that populates the cell with given attributes
     func configure(title: String, location: Location, alertOnArrival: Bool, repeats: Bool) {
         
         titleLabel.text = title

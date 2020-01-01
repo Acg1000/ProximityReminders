@@ -5,6 +5,7 @@
 //  Created by Andrew Graves on 12/28/19.
 //  Copyright © 2019 Andrew Graves. All rights reserved.
 //
+//  FUNCTION: Serves as the View Controller for the Create+EditReminder View
 
 import UIKit
 import MapKit
@@ -79,13 +80,14 @@ class Create_EditReminderViewController: UIViewController {
         mapView.addGestureRecognizer(tapGestureRecognizer)
         getCurrentLocationButton.tintColor = .gray
         
+        // If the reminder is being edited
         if isEditingReminder {
             titleLabel.title = "Edit Reminder"
             
             if let reminder = editingReminder {
+                // Setting the basic variables
                 titleField.text = reminder.name
                 deleteIcon.isEnabled = true
-
                 clLocation = CLLocation(latitude: reminder.location.latitude, longitude: reminder.location.longitude)
                 
                 // Getting the address
@@ -105,29 +107,9 @@ class Create_EditReminderViewController: UIViewController {
                     singleUseSwitcher.selectedSegmentIndex = 0
                 }
                 
-                
-                // TODO: REMOVE THIS AND CREATE A CLASS FOR IT
-                
-                // Remove the annotations that exist
-                mapView.removeAnnotations(mapView.annotations)
-                
-                let point = MKPointAnnotation()
-                point.coordinate = CLLocationCoordinate2D(latitude: reminder.location.latitude, longitude: reminder.location.longitude)
-                
-                locationManager.getPlacemark(from: CLLocation(latitude: reminder.location.latitude, longitude: reminder.location.longitude)) { placemark in
-                    
-                    // Set the pin details
-                    point.title = placemark?.name
-                    point.subtitle = placemark?.locality
-                    
-                    // Set the placemark
-                    self.placemark = placemark
-                    
-                }
-                
-                // Add the annotation
-                mapView.addAnnotation(point)
-                getCurrentLocationButton.tintColor = .gray
+                // Add a pin at the saved location to the map
+                addPin(at: CLLocation(latitude: reminder.location.latitude, longitude: reminder.location.longitude))
+
             }
 
         } else {
@@ -138,12 +120,15 @@ class Create_EditReminderViewController: UIViewController {
     }
     
     // MARK: Helper functions
+    
+    // Create an alert with a given title and description
     func createAlert(withTitle title: String, andDescription description: String){
         let alertController = UIAlertController(title: title, message: description, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "dismiss", style: .cancel, handler: nil))
         present(alertController, animated: true, completion: nil)
     }
     
+    // These two functions allow the keyboard to push the view upwards
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
@@ -158,15 +143,41 @@ class Create_EditReminderViewController: UIViewController {
         }
     }
     
+    // Shifts the map to a provided location
     func goToLocation(_ location: CLLocation) {
+        // create a center and region
         let center = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
         let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-        mapView.setRegion(region, animated: true)
         
+        // Set the map region and overlays
+        mapView.setRegion(region, animated: true)
         mapView.removeOverlays(mapView.overlays)
         let mkCircle = MKCircle(center: center, radius: 50)
         mapView.addOverlay(mkCircle)
         
+    }
+    
+    func addPin(at location: CLLocation) {
+        // Remove all the current annotations
+        mapView.removeAnnotations(mapView.annotations)
+
+        let point = MKPointAnnotation()
+        point.coordinate = CLLocationCoordinate2D(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)
+        
+        locationManager.getPlacemark(from: CLLocation(latitude: location.coordinate.latitude, longitude: location.coordinate.longitude)) { placemark in
+            
+            // Set the pin details
+            point.title = placemark?.name
+            point.subtitle = placemark?.locality
+            
+            // Set the placemark
+            self.placemark = placemark
+            
+        }
+        
+        // Add the annotation
+        mapView.addAnnotation(point)
+        getCurrentLocationButton.tintColor = .gray
     }
     
     
@@ -189,6 +200,7 @@ class Create_EditReminderViewController: UIViewController {
         
     // MARK: Button Functions
     @IBAction func savePressed(_ sender: Any) {
+        // Check to see if there is a location and name
         guard let name = titleField.text, !name.isEmpty else { createAlert(withTitle: "Title needed", andDescription: "Please enter a title to save"); return }
         guard let location = clLocation else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
         
@@ -226,6 +238,7 @@ class Create_EditReminderViewController: UIViewController {
             guard let placemark = placemark else { createAlert(withTitle: "Location needed", andDescription: "Please enter a location to save"); return }
 
             
+            // Create location and reminder
             let location = Location.with(longitude: location.coordinate.longitude, latitude: location.coordinate.latitude, address: placemark.name, city: placemark.locality, inContext: context)
             
             let reminder = Reminder.with(name, description: nil, alertOnArrival: alertOnArrival, isRecurring: isRecurring, creationDate: date, location: location, inContext: context)
@@ -321,7 +334,6 @@ class Create_EditReminderViewController: UIViewController {
 extension Create_EditReminderViewController: LocationManagerDelegate {
     
     func obtainedPlacemark(_ placemark: CLPlacemark, location: CLLocation) {
-        
         clLocation = location
         self.placemark = placemark
     }
