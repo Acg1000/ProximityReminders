@@ -33,13 +33,6 @@ class RemindersViewController: UITableViewController {
         
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "createReminder" {
-            let createReminderController = segue.destination as? Create_EditReminderViewController
-            
-        }
-    }
-    
     // MARK: Delegate Methods
     override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return.delete

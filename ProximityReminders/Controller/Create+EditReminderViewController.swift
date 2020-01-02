@@ -151,7 +151,7 @@ class Create_EditReminderViewController: UIViewController {
         // Set the map region and overlays
         mapView.setRegion(region, animated: true)
         mapView.removeOverlays(mapView.overlays)
-        let mkCircle = MKCircle(center: center, radius: 50)
+        let mkCircle = MKCircle(center: center, radius: 60)
         mapView.addOverlay(mkCircle)
         
     }
@@ -395,6 +395,7 @@ extension Create_EditReminderViewController: UITextFieldDelegate {
 
                 } else {
                     textField.text = nil
+                    textField.placeholder = "Location not found..."
                 }
             }
         }

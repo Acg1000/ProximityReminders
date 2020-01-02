@@ -35,7 +35,7 @@ class NotificationManager {
         
         // Set the circular region that will trigger the notification
         let center = CLLocationCoordinate2D(latitude: reminder.location.latitude, longitude: reminder.location.longitude)
-        let region = CLCircularRegion(center: center, radius: 50, identifier: reminder.uuid.uuidString)
+        let region = CLCircularRegion(center: center, radius: 60, identifier: reminder.uuid.uuidString)
         
         // Depending on what the user selected, trigger the alert on exit or entrance
         if reminder.alertOnArrival {

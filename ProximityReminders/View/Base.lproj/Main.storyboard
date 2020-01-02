@@ -127,7 +127,7 @@
                                             </connections>
                                         </barButtonItem>
                                         <rightBarButtonItems>
-                                            <barButtonItem style="plain" systemItem="save" id="LbW-X9-4SQ">
+                                            <barButtonItem systemItem="save" id="LbW-X9-4SQ">
                                                 <connections>
                                                     <action selector="savePressed:" destination="XuJ-Dh-Efm" id="LEJ-Ex-cF4"/>
                                                 </connections>
