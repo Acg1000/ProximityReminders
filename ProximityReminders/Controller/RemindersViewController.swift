@@ -36,7 +36,6 @@ class RemindersViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "createReminder" {
             let createReminderController = segue.destination as? Create_EditReminderViewController
-            createReminderController?.wasDismissedDelegate = self
             
         }
     }
@@ -60,15 +59,6 @@ class RemindersViewController: UITableViewController {
 
 // MARK: Extensions
 
-extension RemindersViewController: WasDismissedDelegate {
-    func wasDismissed() {
-        
-        dataSource.refreshData()
-        tableView.reloadData()
-        
-    }
-}
-
 extension RemindersViewController: UNUserNotificationCenterDelegate {
     // This method will be called when app received push notifications in foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
@@ -81,7 +71,7 @@ extension RemindersViewController: UNUserNotificationCenterDelegate {
         for reminder in dataSource.reminders {
             if reminder.uuid.uuidString == uuid && !reminder.isRecurring {
                 context.delete(reminder)
-                dataSource.refreshData()
+//                dataSource.refreshData()
                 tableView.reloadData()
                 
             } else if reminder.uuid.uuidString == uuid && reminder.isRecurring {
@@ -103,7 +93,7 @@ extension RemindersViewController: UNUserNotificationCenterDelegate {
         for reminder in dataSource.reminders {
             if reminder.uuid.uuidString == uuid && !reminder.isRecurring {
                 context.delete(reminder)
-                dataSource.refreshData()
+//                dataSource.refreshData()
                 tableView.reloadData()
                 
             } else if reminder.uuid.uuidString == uuid && reminder.isRecurring {

@@ -26,7 +26,6 @@ class Create_EditReminderViewController: UIViewController {
         return LocationManager(locationDelegate: self, permissionsDelegate: nil)
     }()
     let context = CoreDataStack.shared.managedObjectContext
-    var wasDismissedDelegate: WasDismissedDelegate?
     var notificationManager = NotificationManager.shared
     
     
@@ -249,7 +248,6 @@ class Create_EditReminderViewController: UIViewController {
                 // Saving the changes
                 context.saveChanges()
                 dismiss(animated: true, completion: nil)
-                wasDismissedDelegate?.wasDismissed()
             }
             
         } else {
@@ -267,8 +265,6 @@ class Create_EditReminderViewController: UIViewController {
             
             context.saveChanges()
             dismiss(animated: true, completion: nil)
-            wasDismissedDelegate?.wasDismissed()
-
         }
     }
     
@@ -338,7 +334,6 @@ class Create_EditReminderViewController: UIViewController {
             context.delete(reminder)
             context.saveChanges()
             dismiss(animated: true, completion: nil)
-            wasDismissedDelegate?.wasDismissed()
                         
         } else {
             print("Not Deleted")
@@ -405,7 +400,7 @@ extension Create_EditReminderViewController: UITextFieldDelegate {
                 if let placemark = placemark, let location = placemark.location {
                     self.clLocation = location
                     self.placemark = placemark
-                    self.addPin(at: location)                    
+                    self.addPin(at: location)
 
                 } else {
                     textField.text = nil
@@ -415,11 +410,4 @@ extension Create_EditReminderViewController: UITextFieldDelegate {
         
         return true
     }
-}
-
-
-// MARK: Protocols
-
-protocol WasDismissedDelegate {
-    func wasDismissed()
 }

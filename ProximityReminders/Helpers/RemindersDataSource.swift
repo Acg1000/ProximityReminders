@@ -15,14 +15,12 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
     private let tableView: UITableView
     private let context = CoreDataStack.shared.managedObjectContext
     private let notificationManager = NotificationManager.shared
-    
     lazy var fetchedResultsController: RemindersFetchedResultsController = {
         return RemindersFetchedResultsController(tableView: self.tableView)
     }()
     
     init(tableView: UITableView) {
         self.tableView = tableView
-        
     }
     
     func object(at indexPath: IndexPath) -> Reminder {
@@ -30,13 +28,13 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
     }
     
     // Refreshes the data by fetching a new batch of reminders from Core Data
-    func refreshData() {
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            fatalError("Fetch request or context was invalid")
-        }
-    }
+//    func refreshData() {
+//        do {
+//            try fetchedResultsController.performFetch()
+//        } catch {
+//            fatalError("Fetch request or context was invalid")
+//        }
+//    }
     
     
     // MARK: DATASOURCE Methods
@@ -57,7 +55,6 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
     }
     
     // Delete functionality
- 
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let item = fetchedResultsController.object(at: indexPath)
         
