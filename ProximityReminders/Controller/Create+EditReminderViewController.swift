@@ -151,7 +151,7 @@ class Create_EditReminderViewController: UIViewController {
         // Set the map region and overlays
         mapView.setRegion(region, animated: true)
         mapView.removeOverlays(mapView.overlays)
-        let mkCircle = MKCircle(center: center, radius: 60)
+        let mkCircle = MKCircle(center: center, radius: 50)
         mapView.addOverlay(mkCircle)
         
     }
