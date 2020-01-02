@@ -60,10 +60,6 @@ class NotificationManager {
         let trigger = UNLocationNotificationTrigger(region: region, repeats: reminder.isRecurring)
         let request = UNNotificationRequest(identifier: reminder.uuid.uuidString, content: content, trigger: trigger)
         
-        // Trigger and request for a time based for testing
-//        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
-//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        
         // Add the notification to the notification queue
         self.center.add(request) { (error) in
             if error != nil {

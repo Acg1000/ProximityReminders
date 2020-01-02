@@ -5,6 +5,7 @@
 //  Created by Andrew Graves on 1/1/20.
 //  Copyright © 2020 Andrew Graves. All rights reserved.
 //
+//  Function: Creates a special kind of FetchedResultsController
 
 import Foundation
 import CoreData

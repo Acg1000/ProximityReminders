@@ -68,7 +68,6 @@ class Create_EditReminderViewController: UIViewController {
         titleField.delegate = self
         locationTextField.delegate = self
         mapView.delegate = self
-//        notificationManager.center.delegate = self
         getCurrentSwitchStates()
         
         // Keyboard notification manager
@@ -379,14 +378,6 @@ extension Create_EditReminderViewController: MKMapViewDelegate {
         return MKOverlayRenderer(overlay: overlay)
     }
 }
-
-//extension Create_EditReminderViewController: UNUserNotificationCenterDelegate {
-//    // This method will be called when app received push notifications in foreground
-//    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-//        print("Notification happened")
-//        completionHandler([.alert, .badge, .sound])
-//    }
-//}
 
 // Make keyboard dismiss when done is pressed on the keyboard
 extension Create_EditReminderViewController: UITextFieldDelegate {

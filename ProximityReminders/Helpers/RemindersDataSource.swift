@@ -27,15 +27,6 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
         return fetchedResultsController.object(at: indexPath)
     }
     
-    // Refreshes the data by fetching a new batch of reminders from Core Data
-//    func refreshData() {
-//        do {
-//            try fetchedResultsController.performFetch()
-//        } catch {
-//            fatalError("Fetch request or context was invalid")
-//        }
-//    }
-    
     
     // MARK: DATASOURCE Methods
     func numberOfSections(in tableView: UITableView) -> Int {

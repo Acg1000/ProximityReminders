@@ -75,9 +75,9 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         let queue = DispatchQueue(label: "Network Monitor")
         monitor.start(queue: queue)
         
+        // try the request and if it fails then check it for certain kids of errors
         do {
             try requestLocationAuthorization()
-
         } catch LocationError.disallowedByUser {
             locationDelegate?.failedWithError(LocationError.disallowedByUser)
         } catch LocationError.unableToFindLocation {
