@@ -403,9 +403,9 @@ extension Create_EditReminderViewController: UITextFieldDelegate {
             locationManager.getLocation(from: address) { placemark in
                 
                 if let placemark = placemark, let location = placemark.location {
-                    textField.text = placemark.name
-                    self.goToLocation(location)
-                    self.addPin(at: location)
+                    self.clLocation = location
+                    self.placemark = placemark
+                    self.addPin(at: location)                    
 
                 } else {
                     textField.text = nil

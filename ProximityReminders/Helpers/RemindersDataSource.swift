@@ -13,20 +13,20 @@ import UIKit
 class RemindersDataSource: NSObject, UITableViewDataSource {
     
     private let tableView: UITableView
-    private let fetchedResultsController: NSFetchedResultsController<Reminder>
+    private let context = CoreDataStack.shared.managedObjectContext
+    private let notificationManager = NotificationManager.shared
     
-    init(fetchRequest: NSFetchRequest<Reminder>, managedObjectContext context: NSManagedObjectContext, tableView: UITableView) {
+    lazy var fetchedResultsController: RemindersFetchedResultsController = {
+        return RemindersFetchedResultsController(tableView: self.tableView)
+    }()
+    
+    init(tableView: UITableView) {
         self.tableView = tableView
-        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            fatalError("Fetch request or context was invalid")
-        }
-        
-        super.init()
-        self.fetchedResultsController.delegate = self
+    }
+    
+    func object(at indexPath: IndexPath) -> Reminder {
+        return fetchedResultsController.object(at: indexPath)
     }
     
     // Refreshes the data by fetching a new batch of reminders from Core Data
@@ -54,6 +54,17 @@ class RemindersDataSource: NSObject, UITableViewDataSource {
         cell.configure(title: reminder.name, location: reminder.location, alertOnArrival: reminder.alertOnArrival, repeats: reminder.isRecurring)
         
         return cell
+    }
+    
+    // Delete functionality
+ 
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let item = fetchedResultsController.object(at: indexPath)
+        
+        notificationManager.removeNotification(withIdentifier: item.uuid)
+        context.delete(item)
+        context.saveChanges()
+                 
     }
 }
 

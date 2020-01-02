@@ -17,8 +17,9 @@ class RemindersViewController: UITableViewController {
     var notificationManager = NotificationManager.shared
     
     lazy var dataSource: RemindersDataSource = {
-        let request: NSFetchRequest<Reminder> = Reminder.fetchRequest()
-        return RemindersDataSource(fetchRequest: request, managedObjectContext: context, tableView: self.tableView)
+//        let request: NSFetchRequest<Reminder> = Reminder.fetchRequest()
+//        return RemindersDataSource(fetchRequest: request, managedObjectContext: context, tableView: self.tableView)
+        return RemindersDataSource(tableView: self.tableView)
     }()
 
     override func viewDidLoad() {
@@ -41,6 +42,11 @@ class RemindersViewController: UITableViewController {
     }
     
     // MARK: Delegate Methods
+    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return.delete
+    }
+    
+    // MARK: Navigation
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let selectedReminder = dataSource.reminders[indexPath.row]
