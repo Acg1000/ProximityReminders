@@ -64,4 +64,9 @@ extension Reminder {
         
         return reminder
     }
+    
+    func delete() {
+        CoreDataStack.shared.managedObjectContext.delete(self)
+        CoreDataStack.shared.managedObjectContext.saveChanges()
+    }
 }

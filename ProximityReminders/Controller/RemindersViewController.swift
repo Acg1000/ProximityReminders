@@ -16,37 +16,65 @@ class RemindersViewController: UITableViewController {
     var context = CoreDataStack.shared.managedObjectContext
     var notificationManager = NotificationManager.shared
     
-    lazy var dataSource: RemindersDataSource = {
-//        let request: NSFetchRequest<Reminder> = Reminder.fetchRequest()
-//        return RemindersDataSource(fetchRequest: request, managedObjectContext: context, tableView: self.tableView)
-        return RemindersDataSource(tableView: self.tableView)
+    private let fetchedResultsController: NSFetchedResultsController = {
+        return NSFetchedResultsController(fetchRequest: Reminder.fetchRequest(), managedObjectContext: CoreDataStack.shared.managedObjectContext, sectionNameKeyPath: nil, cacheName: nil)
     }()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            print(error)
+        }
 
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 79.5
-        tableView.dataSource = dataSource
-        tableView.delegate = self
         notificationManager.center.delegate = self
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return fetchedResultsController.sections?[section].numberOfObjects ?? 0
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ReminderCell.reuseIdentifier, for: indexPath)
         
+        if let reminderCell = cell as? ReminderCell {
+            let reminder = fetchedResultsController.object(at: indexPath)
+            reminderCell.configure(title: reminder.name, location: reminder.location, alertOnArrival: reminder.alertOnArrival, repeats: reminder.isRecurring)
+        }
+        
+        return cell
+    }
+    
+    // Delete functionality
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if case .delete = editingStyle {
+            let reminder = fetchedResultsController.object(at: indexPath)
+            
+            notificationManager.removeNotification(withIdentifier: reminder.uuid)
+            reminder.delete()
+        }
     }
     
     // MARK: Delegate Methods
-    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return.delete
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
     
     // MARK: Navigation
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         
-        let selectedReminder = dataSource.reminders[indexPath.row]
+        let selectedReminder = fetchedResultsController.object(at: indexPath)
         let editReminderController = storyboard?.instantiateViewController(withIdentifier: "CreateReminderController") as! Create_EditReminderViewController
         editReminderController.setupView(withReminder: selectedReminder)
         
         self.present(editReminderController, animated: true, completion: nil)
-        
     }
 }
 
@@ -61,11 +89,11 @@ extension RemindersViewController: UNUserNotificationCenterDelegate {
         // Get the identifier of the notification to query all the reminders
         let uuid = notification.request.identifier
         
-        for reminder in dataSource.reminders {
+        guard let reminders = fetchedResultsController.fetchedObjects else { return }
+        
+        for reminder in reminders {
             if reminder.uuid.uuidString == uuid && !reminder.isRecurring {
-                context.delete(reminder)
-//                dataSource.refreshData()
-                tableView.reloadData()
+                reminder.delete()
                 
             } else if reminder.uuid.uuidString == uuid && reminder.isRecurring {
                 let editReminderController = storyboard?.instantiateViewController(withIdentifier: "CreateReminderController") as! Create_EditReminderViewController
@@ -83,11 +111,11 @@ extension RemindersViewController: UNUserNotificationCenterDelegate {
         
         let uuid = response.notification.request.identifier
         
-        for reminder in dataSource.reminders {
+        guard let reminders = fetchedResultsController.fetchedObjects else { return }
+        
+        for reminder in reminders {
             if reminder.uuid.uuidString == uuid && !reminder.isRecurring {
-                context.delete(reminder)
-//                dataSource.refreshData()
-                tableView.reloadData()
+                reminder.delete()
                 
             } else if reminder.uuid.uuidString == uuid && reminder.isRecurring {
                 let editReminderController = storyboard?.instantiateViewController(withIdentifier: "CreateReminderController") as! Create_EditReminderViewController
@@ -97,5 +125,35 @@ extension RemindersViewController: UNUserNotificationCenterDelegate {
         }
         
         completionHandler()
+    }
+}
+
+extension RemindersViewController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        switch type {
+        case .insert:
+            guard let newIndexPath = newIndexPath else {return}
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+        case .delete:
+            guard let indexPath = indexPath else { return }
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        case .update:
+            guard let indexPath = indexPath else { return }
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        case .move:
+            guard let indexPath = indexPath, let newIndexPath = newIndexPath else { return }
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            tableView.insertRows(at: [newIndexPath], with: .automatic)
+        @unknown default: break
+        }
+    }
+        
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        tableView.endUpdates()
     }
 }
