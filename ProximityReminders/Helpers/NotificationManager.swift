@@ -14,7 +14,7 @@ import UserNotifications
 class NotificationManager {
     static let shared = NotificationManager()
     let center = UNUserNotificationCenter.current()
-
+    
     // Asks the user if the app can display notifications
     func requestAuthorization() {
         center.requestAuthorization(options: [.alert, .sound]) {

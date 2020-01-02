@@ -106,6 +106,20 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    func getLocation(from string: String, completionHandler: @escaping (CLPlacemark?) -> Void) {
+        let geocoder = CLGeocoder()
+        
+        geocoder.geocodeAddressString(string) { (placemarks, error) in
+            if error == nil {
+                let placemark = placemarks?.first
+                completionHandler(placemark)
+                
+            } else {
+                completionHandler(nil)
+            }
+        }
+    }
+    
     
     // If it fails then...
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {

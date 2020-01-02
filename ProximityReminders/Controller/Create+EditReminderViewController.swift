@@ -67,9 +67,10 @@ class Create_EditReminderViewController: UIViewController {
         // Setup
         setupMap()
         titleField.delegate = self
-        locationTextField.isEnabled = false
+        locationTextField.delegate = self
         mapView.delegate = self
-        notificationManager.center.delegate = self
+//        notificationManager.center.delegate = self
+        getCurrentSwitchStates()
         
         // Keyboard notification manager
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -180,6 +181,22 @@ class Create_EditReminderViewController: UIViewController {
         getCurrentLocationButton.tintColor = .gray
     }
     
+    func getCurrentSwitchStates() {
+        switch approachingSwitcher.selectedSegmentIndex {
+        case 0: alertOnArrival = true
+        case 1: alertOnArrival = false
+        default:
+            alertOnArrival = true
+        }
+        
+        switch singleUseSwitcher.selectedSegmentIndex {
+        case 0: isRecurring = false
+        case 1: isRecurring = true
+        default:
+            isRecurring = true
+        }
+    }
+    
     
     // MARK: Preperation
     func setupView(withReminder reminder: Reminder) {
@@ -220,6 +237,7 @@ class Create_EditReminderViewController: UIViewController {
                 
                 
                 // Recurring AND Alert
+                getCurrentSwitchStates()
                 reminder.setValue(isRecurring, forKey: "isRecurring")
                 reminder.setValue(alertOnArrival, forKey: "alertOnArrival")
                 
@@ -297,8 +315,8 @@ class Create_EditReminderViewController: UIViewController {
    
     @IBAction func approachingSwitched(_ sender: Any) {
         switch approachingSwitcher.selectedSegmentIndex {
-        case 0: alertOnArrival = true; print("alert on arrival")
-        case 1: alertOnArrival = false; print("alert on departure")
+        case 0: alertOnArrival = true
+        case 1: alertOnArrival = false
         default:
             alertOnArrival = true
         }
@@ -306,8 +324,8 @@ class Create_EditReminderViewController: UIViewController {
     
     @IBAction func singleUseSwitched(_ sender: Any) {
         switch singleUseSwitcher.selectedSegmentIndex {
-        case 0: isRecurring = false; print("single use")
-        case 1: isRecurring = true; print("repeat")
+        case 0: isRecurring = false
+        case 1: isRecurring = true
         default:
             alertOnArrival = true
         }
@@ -367,19 +385,34 @@ extension Create_EditReminderViewController: MKMapViewDelegate {
     }
 }
 
-extension Create_EditReminderViewController: UNUserNotificationCenterDelegate {
-    // This method will be called when app received push notifications in foreground
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("Notification happened")
-        completionHandler([.alert, .badge, .sound])
-    }
-}
+//extension Create_EditReminderViewController: UNUserNotificationCenterDelegate {
+//    // This method will be called when app received push notifications in foreground
+//    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+//        print("Notification happened")
+//        completionHandler([.alert, .badge, .sound])
+//    }
+//}
 
 // Make keyboard dismiss when done is pressed on the keyboard
 extension Create_EditReminderViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
 
         textField.resignFirstResponder()
+
+        if textField == locationTextField, let address = textField.text {
+            locationManager.getLocation(from: address) { placemark in
+                
+                if let placemark = placemark, let location = placemark.location {
+                    textField.text = placemark.name
+                    self.goToLocation(location)
+                    self.addPin(at: location)
+
+                } else {
+                    textField.text = nil
+                }
+            }
+        }
+        
         return true
     }
 }

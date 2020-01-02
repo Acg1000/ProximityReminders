@@ -20,6 +20,19 @@ extension Reminder {
         request.sortDescriptors = [sortDescriptor]
         return request
     }
+    
+    @nonobjc public class func fetchRequest(with uuid: String) -> NSFetchRequest<Reminder> {
+        let fetchRequest = NSFetchRequest<Reminder>(entityName: "Reminder")
+        let predicate = NSPredicate(format: "uuid == %@", uuid)
+        fetchRequest.predicate = predicate
+        
+        return fetchRequest
+    }
+    
+//    public override func awakeFromFetch() {
+//        super.awakeFromFetch()
+//    }
+    
 
     @NSManaged public var name: String
     @NSManaged public var detail: String?

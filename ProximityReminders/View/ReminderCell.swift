@@ -41,9 +41,9 @@ class ReminderCell: UITableViewCell {
         }
         
         if repeats {
-            repeatsLabel.text = "true"
+            repeatsLabel.text = "repeats"
         } else {
-            repeatsLabel.text = "false"
+            repeatsLabel.text = "single-use"
         }
     }
 }
